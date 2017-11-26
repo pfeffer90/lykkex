@@ -5,19 +5,34 @@ except:
 import json
 
 
+def set_api_environment(environment):
+    """
+    Allows to switch between production and development environment.
+    :param environment: string specifying the api environment to use, either prod or dev
+    """
+    if environment == "prod":
+        LykkexConstants.use_production_api()
+    elif environment == "dev":
+        LykkexConstants.use_dev_api()
+    else:
+        raise RuntimeError("Specified unknown api environment {}. Use prod or dev.".format(environment))
+
+
 class LykkexConstants(object):
+    DEV_ENVIRONMENT = "https://hft-service-dev.lykkex.net/api/"
+    PROD_ENVIRONMENT = "https://hft-api.lykke.com/api/"
+    BASE_URL = DEV_ENVIRONMENT
 
-    API_ENVIRONMENT = 'dev'
-    if API_ENVIRONMENT == 'dev':
-        BASE_URL = "https://hft-service-dev.lykkex.net/api/"
-        WALLET_URL = 'https://hft-service-dev.lykkex.net/api/Wallets'
+    @staticmethod
+    def use_production_api():
+        LykkexConstants.BASE_URL = LykkexConstants.PROD_ENVIRONMENT
 
-    if API_ENVIRONMENT == 'real':
-        BASE_URL = "https://hft-api.lykke.com/api/"        
-        WALLET_URL = "https://hft-api.lykke.com/api/Wallets"
+    @staticmethod
+    def use_dev_api():
+        LykkexConstants.BASE_URL = LykkexConstants.DEV_ENVIRONMENT
 
     ORDER_BOOKS_RELATIVE_URL = "OrderBooks"
-
+    WALLETS_RELATIVE_URL = "Wallets"
     IS_ALIVE_RELATIVE_URL = "IsAlive"
 
 
@@ -40,7 +55,8 @@ def get_order_book(asset_pair_id):
 
 
 def get_balance(api_key):
-    return json.loads(urlopen(Request(LykkexConstants.WALLET_URL, headers=_get_header(api_key))).read())
+    return json.loads(urlopen(Request(LykkexConstants.BASE_URL + LykkexConstants.WALLETS_RELATIVE_URL,
+                                      headers=_get_header(api_key))).read())
 
 
 def get_pending_orders(api_key):

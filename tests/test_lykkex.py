@@ -6,6 +6,9 @@ import lykkex.lykkex as lykkex
 
 
 class TestLykkex(TestCase):
+    def setUp(self):
+        lykkex.set_api_environment("dev")
+
     @vcr.use_cassette('vcr_cassetes/is_alive.yml')
     def test_is_alive_returns_a_dict_with_a_field_for_possible_issues(self):
         response = lykkex.is_alive()
@@ -24,3 +27,9 @@ class TestLykkex(TestCase):
 
         for entry in order_book:
             self.assertEqual(entry["AssetPair"], asset_pair_id)
+
+    def test_set_api_environment_allows_to_change_to_the_production_api(self):
+        dev_url = lykkex.LykkexConstants.BASE_URL
+        lykkex.set_api_environment("prod")
+        prod_url = lykkex.LykkexConstants.BASE_URL
+        self.assertNotEqual(dev_url, prod_url)
