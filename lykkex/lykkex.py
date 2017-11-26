@@ -6,10 +6,19 @@ import json
 
 
 class LykkexConstants(object):
+
+    API_ENVIRONMENT = 'dev'
+    if API_ENVIRONMENT == 'dev':
+        BASE_URL = "https://hft-service-dev.lykkex.net/api/"
+        WALLET_URL = 'https://hft-service-dev.lykkex.net/api/Wallets'
+
+    if API_ENVIRONMENT == 'real':
+        BASE_URL = "https://hft-api.lykke.com/api/"        
+        WALLET_URL = "https://hft-api.lykke.com/api/Wallets"
+
     ORDER_BOOKS_RELATIVE_URL = "OrderBooks"
-    BASE_URL = "https://hft-service-dev.lykkex.net/api/"
+
     IS_ALIVE_RELATIVE_URL = "IsAlive"
-    WALLET_URL = 'https://hft-service-dev.lykkex.net/api/Wallets'
 
 
 def _get_header(api_key):
